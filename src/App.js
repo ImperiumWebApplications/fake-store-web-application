@@ -1,23 +1,35 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from "react";
+import CategorySidebar from "./components/CategorySidebar";
+import ProductTable from "./components/ProductTable";
+import Header from "./components/Header";
+import { Container, Grid } from "@mui/material";
 
 function App() {
+  const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("");
+
+  useEffect(() => {
+    fetch("https://fakestoreapi.com/products/categories")
+      .then((res) => res.json())
+      .then((json) => setCategories(json));
+  }, []);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Header />
+      <Container>
+        <Grid container spacing={3}>
+          <Grid item xs={3}>
+            <CategorySidebar
+              categories={categories}
+              onSelectCategory={setSelectedCategory}
+            />
+          </Grid>
+          <Grid item xs={9}>
+            <ProductTable selectedCategory={selectedCategory} />
+          </Grid>
+        </Grid>
+      </Container>
     </div>
   );
 }
